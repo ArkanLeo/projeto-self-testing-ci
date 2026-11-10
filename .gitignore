@@ -1,0 +1,8 @@
+__pycache__/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.env
+.ruff_cache/
+perf/results*
