@@ -125,9 +125,10 @@ def test_extrato_com_filtro_de_data(service):
     a, b = two_accounts(service)
     service.transfer(a, b, 100)
     service.txs.add(a, "credit", 5, b, "2020-01-15T10:00:00+00:00")
-    assert len(service.statement(a, date_from="2020-01-01", date_to="2020-01-31")) == 1
+    service.txs.add(a, "credit", 7, b, "2020-01-31T23:59:00+00:00")  # último dia do período
+    assert len(service.statement(a, date_from="2020-01-01", date_to="2020-01-31")) == 2
     assert len(service.statement(a, date_from="2999-01-01")) == 0
-    assert len(service.statement(a, date_to="2020-12-31")) == 1
+    assert len(service.statement(a, date_to="2020-12-31")) == 2
 
 
 def test_extrato_filtros_invalidos(service):
