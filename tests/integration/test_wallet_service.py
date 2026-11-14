@@ -156,3 +156,20 @@ def test_gateways_padrao():
     assert SimpleRegistryValidator().is_valid("12345678901")
     assert not SimpleRegistryValidator().is_valid("abc")
 
+
+def test_mesma_chave_de_idempotencia_em_paralelo_cobra_uma_vez(service):
+    a, b = two_accounts(service)
+    erros, resultados = [], []
+
+    def worker():
+        try:
+            resultados.append(service.transfer(a, b, 100, "chave-paralela"))
+        except Exception as exc:  # noqa: BLE001
+            erros.append(exc)
+
+    threads = [threading.Thread(target=worker) for _ in range(20)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+    assert erros == []
+    assert sum(1 for r in resultados if not r["replayed"]) == 1
+    assert service.get_account(a)["balance"] == 900

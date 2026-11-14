@@ -39,11 +39,12 @@ class WalletService:
 
     def transfer(self, from_id: int, to_id: int, amount: int, idempotency_key: str | None = None) -> dict:
         validate_amount(amount)
-        if idempotency_key:
-            previous = self.txs.get_idempotent(idempotency_key)
-            if previous:
-                return {**previous, "replayed": True}
         with self.db.lock:  # serializa transferências -> sem corrida de saldo
+            if idempotency_key:
+                previous = self.txs.get_idempotent(idempotency_key)
+                if previous:
+                    return {**previous, "replayed": True}
+
             src, dst = self.get_account(from_id), self.get_account(to_id)
             try:
                 new_src, new_dst = apply_transfer(src["balance"], dst["balance"], amount, from_id == to_id)
