@@ -25,7 +25,7 @@ class TransactionRepository:
             sql += " AND substr(created_at,1,10) >= ?"
             params.append(date_from)
         if date_to:
-            sql += " AND created_at <= ?"
+            sql += " AND substr(created_at,1,10) <= ?"
             params.append(date_to)
         sql += " ORDER BY id"
         return [dict(r) for r in self.db.conn.execute(sql, params).fetchall()]
