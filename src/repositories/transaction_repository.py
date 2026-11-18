@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from .db import Database
 
@@ -9,7 +9,7 @@ class TransactionRepository:
         self.db = db
 
     def add(self, account_id, type_, amount, counterparty_id, created_at: str | None = None):
-        created_at = created_at or datetime.now(timezone.utc).isoformat()
+        created_at = created_at or datetime.now(UTC).isoformat()
         self.db.conn.execute(
             "INSERT INTO transactions (account_id,type,amount,counterparty_id,created_at) VALUES (?,?,?,?,?)",
             (account_id, type_, amount, counterparty_id, created_at),
