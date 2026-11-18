@@ -66,7 +66,7 @@ Dica para ver: `git log --graph --oneline`.
 ### Cobertura (última execução local)
 - Linhas/statements: **99,6%** (meta 85%)
 - Branches: **97,2%** (meta 80%)
-- 29 testes passando.
+- 30 testes passando.
 
 ## 5. Pipeline de CI (`.github/workflows/ci.yml`)
 
